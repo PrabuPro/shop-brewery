@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import prabu.springboot.shopbrewery.web.model.CustomerDTO;
 import prabu.springboot.shopbrewery.web.service.CustomerService;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -27,15 +31,15 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public ResponseEntity saveCustomer(@RequestBody CustomerDTO customerDTO){
+    public ResponseEntity saveCustomer(@Valid @RequestBody CustomerDTO customerDTO){
         CustomerDTO customerDTO1 =  customerService.saveCustomer(customerDTO);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("location", customerDTO1.getId().toString());
+        headers.add("location", API_V_1_CUSTOMER + "/" + customerDTO1.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity updateCustomer(@PathVariable("customerId")UUID customerId, @RequestBody CustomerDTO customerDTO){
+    public ResponseEntity updateCustomer(@PathVariable("customerId")UUID customerId,@Valid @RequestBody CustomerDTO customerDTO){
         customerService.updateCustomer(customerId, customerDTO);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -45,4 +49,6 @@ public class CustomerController {
     public void deleteCustomer(@PathVariable("customerId") UUID customerId){
         customerService.deleteCustomerById(customerId);
     }
+
+
 }
